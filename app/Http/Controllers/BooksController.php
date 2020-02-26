@@ -50,11 +50,18 @@ class BooksController extends Controller
         // print_r( $request->input('name') );
         $this->validate($request, [
             'name' => 'required',
-            'storyline' => 'required'
+            'storyline' => 'required',
+            'cover_image' => 'image|nullable|max:1999',
         ]);
         
         // return 'successful';
-        $book = new Book;
+        if($request->book_id){
+            $book = Book::findorfail($request->book_id);
+        }
+        else{
+            $book = new Book;
+        }
+        
         if($files = $request->file('cover_image')){
             $path = 'public/book_cover_images/';
             $cover_image = date('YmdHis') . "." . $files->getClientOriginalExtension();
@@ -63,6 +70,7 @@ class BooksController extends Controller
         }
         $book->title = $request->input('name');
         $book->storyline = $request->input('storyline');
+        $book->user_id = auth()->user()->id;
         $book->save();
         return redirect(url('/books'))->with('success', 'Your book was added successfully!');
 
@@ -76,7 +84,9 @@ class BooksController extends Controller
      */
     public function show($id)
     {
-        //
+        //single book view
+        $book = Book::find($id);
+        return view('pages.single')->with('book',$book);
     }
 
     /**
@@ -87,7 +97,14 @@ class BooksController extends Controller
      */
     public function edit($id)
     {
-        //
+        $book = Book::find($id);
+
+        if(auth()->user()->id !== $book->user_id){
+            return redirect('/books')->with('error','sorry, you dont have permission to do that');
+        }
+        else{
+            return view('pages.edit_book')->with('book',$book);
+        }
     }
 
     /**
@@ -110,6 +127,8 @@ class BooksController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $book = Book::find($id);
+        $book->delete();
+        return redirect('books')->with('success', 'book deleted successfully!');
     }
 }
