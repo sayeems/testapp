@@ -24,7 +24,7 @@ class ApiController extends Controller
     //single book
     public function updateBook(Request $request)
     {
-        // return $request->story;
+        // return $request->name;
         // $book = $request->isMethod('PUT') ? Book::findorfail($request->book_id) : new Book;
         // $book = new Book;
         // $book->id = $request->input('book_id');   
@@ -41,10 +41,11 @@ class ApiController extends Controller
         else{
             $book = new Book;
         }
-        $book->id = $request->input('book_id');   
-        $book->title = $request->input('name');   
-        $book->storyline = $request->input('story');
+           
+        $book->title = $request->name;   
+        $book->storyline = $request->story;
         
+        // return $book->save();
         if($book->save()){
             return new BookResource($book);
         }
