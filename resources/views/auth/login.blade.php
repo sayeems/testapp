@@ -74,7 +74,7 @@
                 <a type="button" class="btn-floating btn-li btn-sm">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
-                <a type="button" class="btn-floating btn-git btn-sm">
+                <a href="{{ url('/') }}/login/github" type="button" class="btn-floating btn-git btn-sm">
                     <i class="fab fa-github"></i>
                 </a>
 
